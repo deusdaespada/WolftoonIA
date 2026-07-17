@@ -1,63 +1,73 @@
-# Aichiow — Manhwa & AI
+# React + TypeScript + Vite
 
-A trimmed version of Aichiow focused on two features:
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-- **Manhwa** — Browse, search, filter by genre, and read manhwa chapters via MangaDex
-- **Aichixia AI** — AI assistant for manhwa/anime recommendations and screenshot scanning via trace.moe
+Currently, two official plugins are available:
 
----
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Tech Stack
-- **Next.js 14** + TypeScript
-- **Tailwind CSS** + Framer Motion
-- **Supabase** (auth + favorites)
-- **AniList API** (manhwa data)
-- **MangaDex API** (chapter reading)
-- **Aichixia API** (AI chat proxy)
-- **trace.moe API** (anime screenshot scan)
+## React Compiler
 
----
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Pages
+## Expanding the ESLint configuration
 
-| Route | Description |
-|-------|-------------|
-| `/` | Landing page |
-| `/manhwa` | Browse manhwa list with genre filters |
-| `/manhwa/[id]` | Manhwa detail + MangaDex chapters |
-| `/manhwa/genre/[name]` | Filter manhwa by genre |
-| `/read/[chapterId]` | Chapter reader |
-| `/aichixia` | AI assistant chat |
-| `/auth/login` | Login |
-| `/auth/register` | Register |
-| `/profile` | User profile & favorites |
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
----
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
-## Setup
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
 
-```bash
-# 1. Install dependencies
-npm install
-
-# 2. Copy env file
-cp .env.example .env.local
-
-# 3. Fill in your Supabase credentials in .env.local
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
-
-# 4. Run dev server
-npm run dev
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
 
----
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-## What was removed vs original Aichiow
-- Anime section (home, explore, schedule, trailers, characters)
-- Manga (MangaDex standalone manga section)
-- Light Novels
-- Community page
-- Watch page
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
-What remains: **Manhwa + Aichixia AI + Auth + Profile**
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
